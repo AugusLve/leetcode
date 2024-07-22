@@ -1,0 +1,248 @@
+# 解法一：暴力枚举
+
+枚举出所有组合，查找到第一个满足的即可。
+
+* []
+
+```C++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[i] + nums[j] == target) {
+                    return {i, j};
+                }
+            }
+        }
+
+        return {}; // 考虑不存在的情况，但本题中不会出现
+    }
+};
+```
+
+* []
+
+```C
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    for (int i = 0; i < numsSize; ++i) {
+        for (int j = i + 1; j < numsSize; ++j) {
+            if (nums[i] + nums[j] == target) {
+                int* ret = malloc(sizeof(int) * 2);
+                ret[0] = i, ret[1] = j;
+                *returnSize = 2;
+                return ret;
+            }
+        }
+    }
+
+    // 考虑不存在的情况，但本题中不会出现
+    *returnSize = 0;
+    return NULL;
+}
+```
+
+* []
+
+```Python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+        return [] # 考虑不存在的情况，但本题中不会出现
+```
+
+* []
+
+```Java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+
+        return new int[]{}; // 考虑不存在的情况，但本题中不会出现
+    }
+}
+```
+
+* []
+
+```Kotlin
+class Solution {
+    fun twoSum(nums: IntArray, target: Int): IntArray {
+        for(i in nums.indices){
+            for(j in (i+1)..< nums.size){
+                if(nums[i] + nums[j] == target)
+                    return intArrayOf(i, j)
+            }
+        }
+
+        return intArrayOf() // 考虑不存在的情况，但本题中不会出现
+    }
+}
+```
+
+记数组长度为 $n$，可得
+- 时间复杂度：$O(n^2)$
+- 空间复杂度：$\Theta(1)$。不熟悉 $\Theta$ 视为 $O$ 即可。
+
+# 解法二：哈希表
+
+遍历数组，并将用过的元素及下标存入哈希表中，遍历每个 `nums[i]` 时都在哈希表中查询 `target - nums[i]` 即可。
+
+---
+
+<![两数之和.001.jpeg](https://pic.leetcode.cn/1719822750-HkkhrF-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.001.jpeg),
+![两数之和.002.jpeg](https://pic.leetcode.cn/1719823366-pZjSLZ-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.002.jpeg),
+![两数之和.003.jpeg](https://pic.leetcode.cn/1719822760-uuVzcc-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.003.jpeg),
+![两数之和.004.jpeg](https://pic.leetcode.cn/1719822765-tHGHGd-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.004.jpeg),
+![两数之和.005.jpeg](https://pic.leetcode.cn/1719822770-DbNZAP-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.005.jpeg),
+![两数之和.006.jpeg](https://pic.leetcode.cn/1719822775-punOLk-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C.006.jpeg)>
+
+<br> </br>
+
+* []
+
+```C++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> indices;
+
+        for (int i = 0; i < nums.size(); i++) {
+            int v = nums[i];
+            int prevV = target - v;
+            if (indices.count(prevV)) {
+                return {i, indices[prevV]};
+            }
+            indices[v] = i;
+        }
+
+        return {};
+    }
+};
+```
+
+* []
+
+```C
+// 这份 C 代码主要参考自官方题解。
+struct HashTable {
+    int key;
+    int val;
+    UT_hash_handle hh; // hash handle（哈希句柄）的缩写
+};
+
+struct HashTable* hashtable;
+
+// 寻找 
+struct HashTable* find(int ikey) {
+    struct HashTable* tmp;
+    HASH_FIND_INT(hashtable, &ikey, tmp);
+    return tmp;
+}
+
+// 插入
+void insert(int ikey, int ival) {
+    struct HashTable* it = find(ikey);
+    if (it == NULL) {
+        struct HashTable* tmp = malloc(sizeof(struct HashTable));
+        tmp->key = ikey, tmp->val = ival;
+        HASH_ADD_INT(hashtable, key, tmp);
+    } else {
+        it->val = ival;
+    }
+}
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    hashtable = NULL;
+    for (int i = 0; i < numsSize; i++) {
+        struct HashTable* it = find(target - nums[i]);
+        if (it != NULL) {
+            int* ret = malloc(sizeof(int) * 2);
+            ret[0] = it->val, ret[1] = i;
+            *returnSize = 2;
+            return ret;
+        }
+        insert(nums[i], i);
+    }
+    *returnSize = 0;
+    return NULL;
+}
+```
+
+* []
+
+```Python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        indices = {}
+
+        for i, v in enumerate(nums):
+            prevV = target - v
+            if prevV in indices:
+                return [i, indices[prevV]]
+            indices[v] = i
+
+        return []
+```
+
+* []
+
+```Java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> indices = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int v = nums[i];
+            int prevV = target - v;
+            if (indices.containsKey(prevV)) {
+                return new int[] { i, indices.get(prevV) };
+            }
+            indices.put(v, i);
+        }
+
+        return new int[0];
+    }
+}
+```
+
+* []
+
+```Kotlin
+class Solution {
+    fun twoSum(nums: IntArray, target: Int): IntArray {
+        val indices = mutableMapOf<Int, Int>()
+        
+        nums.forEachIndexed{ i, v ->
+            indices[target-v]?.let{ prevI -> 
+                return intArrayOf(prevI, i) 
+            }
+            indices[v] = i
+        }
+
+        return intArrayOf()
+    }
+}
+```
+
+时间复杂度：$O(n)$
+空间复杂度：$O(n)$
+
+# 推广
+
+以下皆为个人所著，兼顾了职场面试和本硕阶段的学术考试。
+
+- [附个人题解的双指针题单](https://leetcode.cn/circle/discuss/BI95fj/)
+- [图论入门](https://leetcode.cn/leetbook/detail/introduction-to-graph/)
+- [图论进阶](https://leetcode.cn/leetbook/detail/advanced-graph-theory/)
+
+点赞关注不迷路。祝君早日上岸，飞黄腾达！
