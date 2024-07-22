@@ -18,6 +18,7 @@ public class ListNode {
         next = null;
     }
 
+    ListNode() {}
 
     public  void add(ListNode head,int num) {
         ListNode newNode = new ListNode(num);

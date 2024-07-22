@@ -1,6 +1,7 @@
 package com.example.algorithm;
 
 import com.example.algorithm.model.ListNode;
+import com.example.algorithm.model.SingleLinkList;
 import com.example.algorithm.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -186,17 +187,17 @@ class AlgorithmApplicationTests {
 
     @Test
     void getIntersectionNode() {
-        ListNode headA = new ListNode(4);
-        int[] arrA={1,8,4,5};
+        SingleLinkList linkListA = new SingleLinkList();
+        int[] arrA={4,1,8,4,5};
         for(int num:arrA){
-            headA.add(headA,num);
+            linkListA.addNode(new ListNode(num));
         }
-        ListNode headB = new ListNode(5);
+        SingleLinkList linkListB = new SingleLinkList();
         int[] arrB={6,1,8,4,5};
         for(int num:arrB){
-            headB.add(headB,num);
+            linkListB.addNode(new ListNode(num));
         }
-        ListNode res = arrayListService.getIntersectionNode(headA,headB);
+        ListNode res = arrayListService.getIntersectionNode(linkListA.getHead(),linkListB.getHead());
         log.info("结果：{}", res);
 
     }

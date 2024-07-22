@@ -10,4 +10,5 @@ import com.example.algorithm.model.ListNode;
 public interface ArrayListService {
 
     public ListNode getIntersectionNode(ListNode headA, ListNode headB);
+
 }
